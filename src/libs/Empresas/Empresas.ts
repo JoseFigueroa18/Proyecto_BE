@@ -1,61 +1,32 @@
-//Interfaz: Es una estructura que define un tipo de dato
-export interface IEmpresa {
-    codigo: string;
-    nombre: string;
-    status: string;
-    created?: Date;
-    updated?: Date;
-    observacion?:string;
-}
-
-//Quick fix
+import { IEmpresa } from "@dao/models/Empresas/IEmpresas";
+import { IDataAccessObject } from "@dao/IDataAccessObject";
 export class Empresas {
-    private empresas : IEmpresa[];
-    constructor(){
-        this.empresas = [];
+  private dao: IDataAccessObject;
+  constructor(dao: IDataAccessObject) {
+    this.dao = dao;
+  }
+  getAll() {
+    return this.dao.findAll();
+  }
+  getById(id: string) {
+    return this.dao.findByID(id);
+  }
+  add(nuevaEmpresa: IEmpresa) {
+    const date = new Date();
+    const nueva: IEmpresa = {
+      ...nuevaEmpresa,
+      created: date,
+      updated: date
     }
-    getAll(){
-        return this.empresas;
-    }
-    getById(codigo: string){
-        const empresaToReturn = this.empresas.find((emp) =>{
-            return emp.codigo === codigo;
-        });
-        return empresaToReturn;
-    }
-    add(nuevaEmpresa: IEmpresa){
-        const date = new Date();
-        const nueva: IEmpresa = {
-            ...nuevaEmpresa,
-            codigo: (Math.random()*1000).toString()+new Date().getTime().toString(),
-            created: date,
-            updated: date,
-        }
-        this.empresas.push(nueva);
-        return true;
-    }
-    update(updateEmpresa: IEmpresa){
-        const newEmpresas: IEmpresa[] = this.empresas.map((emp)=>{
-            if (emp.codigo === updateEmpresa.codigo){
-                return {...emp, ...updateEmpresa, updated: new Date()};
-            }
-            return emp;
-        });
-        this.empresas = newEmpresas;
-        return true;
-    }
-    delete(codigo: string){
-        const empresaToDelete = this.empresas.find((emp) => {
-            return emp.codigo === codigo;
-        });
-        if(empresaToDelete){
-            const newEmpresas: IEmpresa[] = this.empresas.filter((emp) =>{
-                return emp.codigo !== codigo;
-            });
-            this.empresas = newEmpresas;
-            return true;
-        }
-        return false;
+    return this.dao.create(nueva);
+  }
 
-    }
+  update(id: string, updateEmpresa: IEmpresa) {
+    const updateObject = { ...updateEmpresa, updated: new Date() };
+    return this.dao.update(id, updateObject);
+  }
+
+  delete(id: string) {
+    return this.dao.delete(id);
+  }
 }
