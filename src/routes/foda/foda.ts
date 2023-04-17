@@ -1,8 +1,8 @@
 import express from 'express';
 import { EmpresasDao } from '@dao/models/Empresas/EmpresasDao';
-import { FodaDao } from '@dao/models/Foda/FodaDao';
+import { FodaDao } from '@dao/models/FODA/FodaDao';
 import { MongoDBConn } from '@dao/MongoDBConn';
-import {Foda} from '@libs/Foda/Foda';
+import {Foda} from '@libs/FODA/Foda';
 
 const empresasDao = new EmpresasDao(MongoDBConn);
 let fodaDao;
